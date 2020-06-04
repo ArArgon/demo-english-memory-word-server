@@ -51,11 +51,13 @@ public:
         return this;
     }
 
-    MakeHttpResponse* setCode(int _code) : code(_code) {
+    MakeHttpResponse* setCode(int _code) {
+        code = _code;
         return this;
     }
 
-    MakeHttpResponse* setResponseBody(string _responseBody) : responseBody(_responseBody) {
+    MakeHttpResponse* setResponseBody(string _responseBody) {
+        responseBody = _responseBody;
         return this;
     }
 
