@@ -1,33 +1,36 @@
 #include "server.h"
+#include <iostream>
+
+using std::cerr;
+using std::endl;
 
 void startServer(){
     int client;
     int sfd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sfd == -1) {
-        perror("create failed.");
+        cerr << "create failed." << endl;
         return;
     }
-
     sockaddr_in saddr;
     sockaddr_in peer_saddr;
     socklen_t peer_len = sizeof(sockaddr);
     memset(&saddr, 0, sizeof(saddr));
+    
     saddr.sin_family = AF_INET;
     saddr.sin_port = htons(80);
     saddr.sin_addr.s_addr = htonl(INADDR_ANY);
-
+    
     if (bind(sfd, (sockaddr*)&saddr,sizeof(sockaddr)) == -1){
-        perror("bind error.");
+        cerr << "bind failed." << endl;
         return;
     }
 
     if (listen(sfd, 20) == -1){
-        perror("listen error.");
+        cerr << "listen error." << endl;
         return;
     }
     
-    while(1){
-        
+    while(true) {
         client = accept(sfd, (sockaddr*)&peer_saddr, &peer_len);
         if (client == -1){
             perror("accept error.");
@@ -40,7 +43,7 @@ void startServer(){
         if (pid < 0){
             perror("fork error.");
             return;
-        } else if (pid == 0){
+        } else if (!pid){
             close(sfd);
             char* recvbuff = (char*)malloc(1024);
             memset(recvbuff, '\0', sizeof(recvbuff));
@@ -63,7 +66,6 @@ void startServer(){
             close(client);
         }
     }
-
     close(sfd);
 }
 
